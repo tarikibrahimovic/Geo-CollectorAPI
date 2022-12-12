@@ -24,7 +24,7 @@ export const signInUser = async (req, res) => {
 }
 
 export const signUpUser = async (req, res) => {
-    const { email, password, confirmPassword, firstName, lastName } = req.body;
+    const { email, password, confirmPassword, firstName, lastName, profilePicture } = req.body;
 
     try {
         const existingUser = await User.findOne({ email });
@@ -35,7 +35,7 @@ export const signUpUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
+        const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}`, profilePicture: profilePicture || "" });
 
         const token = jwt.sign({ email: result.email, id: result._id }, process.env.JWT_SALT, { expiresIn: "7d" } );
 
@@ -64,10 +64,11 @@ export const verifyJwt = async (req, res) => {
 }
 
 export const changeProfilePicture = async (req, res) => {
+    const { id } = req.params;
     const { profilePicture } = req.body;
 
     try {
-        const user = await User.findByIdAndUpdate(req.userId, { profilePicture });
+        const user = await User.findByIdAndUpdate(id, { profilePicture }, { new: true });
         res.status(201).json({ user });
     } catch (error) {
         res.status(500).json({ message: "Something went wrong." });

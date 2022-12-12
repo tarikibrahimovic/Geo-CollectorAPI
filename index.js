@@ -5,17 +5,19 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import userRoutes from './routes/users.js';
-import photoRoutes from './routes/photo.js';
+import markerRoutes from './routes/markers.js';
+import commentRoutes from './routes/comments.js';
 dotenv.config();
 
 const app = express();
 
-app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(bodyParser.json({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use('/user', userRoutes);
-app.use('/photo', photoRoutes);
+app.use('/markers', markerRoutes);
+app.use('/comments', commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 
